@@ -60,4 +60,32 @@ module.exports = {
           res.status(500).json(err);
         }
       },
+      async createReaction(req, res) {
+        try {
+          const reactions = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $addToSet: req.body },
+            { new: true }
+          );
+          res.json(reactions);
+        } catch (err) {
+          console.log(err);
+          return res.status(500).json(err);
+        }
+      },
+      async deleteReactionById(req, res) {
+        try {
+          const reactions = await Thought.findOneAndUpdate(
+            { _id: req.params.thoughtId },
+            { $pull: req.body },
+            { new: true }
+            );
+    
+          if (!reactions) {
+            res.status(404).json({ message: 'No reactions with that ID' });
+          };
+        } catch (err) {
+          res.status(500).json(err);
+        }
+      }
 }
