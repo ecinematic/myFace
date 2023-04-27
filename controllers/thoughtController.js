@@ -77,12 +77,12 @@ module.exports = {
         try {
           const reactions = await Thought.findOneAndUpdate(
             { _id: req.params.thoughtId },
-            { $pull: req.body },
+            {$pull : { reactions: { reactionId: params.reactionId }}},
             { new: true }
             );
     
           if (!reactions) {
-            res.status(404).json({ message: 'No reactions with that ID' });
+            res.status(404).json({ message: 'No reaction with that ID' });
           };
         } catch (err) {
           res.status(500).json(err);
