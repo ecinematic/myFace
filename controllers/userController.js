@@ -35,8 +35,11 @@ module.exports = {
       },
       async deleteUserById(req, res) {
         try {
-          const users = await User.findOneAndDelete({ _id: req.params.userId });
-    
+          const users = await User.findOneAndDelete(
+            { _id: req.params.userId },
+            { $pull: {users: req.params.userId }},
+            { new: true}
+            );
           if (!users) {
             res.status(404).json({ message: 'No users with that ID' });
           };
@@ -48,7 +51,7 @@ module.exports = {
         try {
           const users = await User.findOneAndUpdate(
             { _id: req.params.userId },
-            { $pull: req.body },
+            { $set: req.body },
             { runValidators: true, new: true }
           );
     
@@ -76,7 +79,7 @@ module.exports = {
       async removeFriend(req, res) {
         try {
           const users = await User.findOneAndUpdate({ _id: req.params.userId },
-            {$pull: {friends: req.params.friendId}},
+            {$pull: {friends: req.params.userId}},
             {new: true});
     
           if (!users) {
